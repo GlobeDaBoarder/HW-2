@@ -111,7 +111,7 @@ int main()
 
 	//Start()
 
-	setFontS(6);
+	setFontS(8);
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_WINDOWED_MODE, 0);
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
 
