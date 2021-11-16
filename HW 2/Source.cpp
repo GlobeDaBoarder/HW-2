@@ -41,6 +41,7 @@ void intro()
 
 	std::ifstream title("./ui/title.txt");
 	printFile(title);
+	title.close();
 
 	char in;
 	while (true)
@@ -55,11 +56,12 @@ void intro()
 	ERR_LOG();
 }
 
-std::ifstream HeroSelect(std::ifstream& scene)
+std::ifstream HeroSelect()
 {
 	system("cls");
 	std::ifstream select("./ui/select.txt");
 	printFile(select);
+	select.close();
 
 	char in;
 	std::ifstream hero;
@@ -70,27 +72,92 @@ std::ifstream HeroSelect(std::ifstream& scene)
 		{
 		case 'p':
 			hero = std::ifstream ("./heroes/pog.txt");
-			scene = std::ifstream("./heroes/pog_and_shrek.txt");
 			return hero;
 		case 'b':
 			hero = std::ifstream("./heroes/big.txt");
-			scene = std::ifstream("./heroes/chungus_and_shrek.txt");
 			return hero;
 		case 'q':
 			hero = std::ifstream("./heroes/dog.txt");
-			scene = std::ifstream("./heroes/dog_and_shrek.txt");
 			return hero;
+		default:
+			ERR_LOG();
+		}
+	}
+
+}
+
+std::ifstream selectAttack()
+{
+	std::ifstream stats("./ui/combos.txt");
+	printFile(stats);
+
+	std::ifstream attack;
+	char in;
+	while (true)
+	{
+		std::cin >> in;
+		switch (in)
+		{
+		case 'b':
+			attack = std::ifstream("./attacks/mlg.txt");
+			return attack;
+		case 'i':
+			attack = std::ifstream("./attacks/triangle.txt");
+			return attack;
+		case 's':
+			attack = std::ifstream("./attacks/spoon.txt");
+			return attack;
 		default:
 			ERR_LOG();
 		}
 	}
 }
 
-void Start()
+void Start(std::ifstream& hero)
 {
-	char in;
-	std::cin >> in;
-	
+	setFontS(5);
+	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_WINDOWED_MODE, 0);
+	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
+
+	std::ifstream attack(selectAttack());
+	system("cls");
+
+	std::ifstream heart("./ui/heart.txt");
+	std::string temp;
+	int n1 = 5;
+	int n2 = 5;
+	while (std::getline(heart, temp))
+	{
+		for (int i = 0; i < n1; ++i)
+		{
+			std::cout << temp;
+		}
+
+		std::cout << std::setw(365 - (50 * n1));
+		for (int i = 0; i < n2; ++i)
+		{
+			std::cout << temp;
+		}
+		std::cout << std::endl;
+
+	}
+
+	std::ifstream shrek("./heroes/shrek.txt");
+
+	std::string hero_temp;
+	std::string at1_temp;
+	//std::string at2_temp;
+	std::string shrek_temp;
+
+	while (std::getline(hero, hero_temp))
+	{
+		std::getline(attack, at1_temp);
+		//std::getline(attack, at2_temp);
+		std::getline(shrek, shrek_temp);
+
+		std::cout << hero_temp << at1_temp << at1_temp << shrek_temp << std::endl;
+
+	}
 }
 
 int main()
@@ -101,8 +168,7 @@ int main()
 
 	//hero select 
 
-	std::ifstream scene;
-	std::ifstream hero =  HeroSelect(scene);
+	std::ifstream hero =  HeroSelect();
 	
 	system("cls");
 	printFile(hero);
@@ -114,57 +180,9 @@ int main()
 	
 	// game start 
 
-	//Start()
+	Start(hero);
 
-	setFontS(5);
-	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_WINDOWED_MODE, 0);
-	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
-
-	//std::cout << std::setw(634) << std::setfill('=') << ' ';
-
-	std::ifstream heart("./ui/heart.txt");
-	std::string temp;
-	int n1 = 5;
-	int n2 = 5;
-	while (std::getline(heart, temp))
-	{
-		for (int i = 0; i < n1; ++i)
-		{
-			std::cout << temp ;
-		}
-
-		std::cout << std::setw(365 - (50*n1));
-		for (int i = 0; i < n2; ++i)
-		{
-			std::cout << temp;
-		}
-		std::cout << std::endl;
-		
-	}
-
-	std::ifstream hero2("./heroes/dog.txt");
-	std::ifstream at1("./attacks/spoon.txt");
-	std::ifstream at2("./attacks/triangle.txt");
-
-	/*printFile(hero2);
-	printFile(at1);
-	printFile(at2);*/
-
-	std::string temp1;
-	std::string temp2;
-	std::string temp3;
-	std::string temp4;
-
-	while (std::getline(hero, temp1))
-	{
-		std::getline(hero2, temp2);
-		std::getline(at1, temp3);
-		std::getline(at2, temp4);
-
-		std::cout << temp1 << temp1 << temp3 << temp4 << std::endl;
-
-	}
-	//printFile(scene);
+	
 	
 	
 }
