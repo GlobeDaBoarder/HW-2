@@ -26,12 +26,7 @@ void ERR_LOG()
 
 void printFile(std::ifstream& in)
 {
-	in.clear();
-	in.seekg(0);
 	std::cout << in.rdbuf();
-	std::cout << std::endl;
-	in.clear();
-	in.seekg(0);
 }
 
 void intro()
@@ -116,11 +111,9 @@ int main()
 
 	//Start()
 
-	setFontS(5);
+	setFontS(8);
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_WINDOWED_MODE, 0);
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
-
-	//std::cout << std::setw(634) << std::setfill('=') << ' ';
 
 	std::ifstream heart("./ui/heart.txt");
 	std::string temp;
@@ -133,7 +126,7 @@ int main()
 			std::cout << temp ;
 		}
 
-		std::cout << std::setw(365 - (50*n1));
+		std::cout << std::setw(210 - (21*n1));
 		for (int i = 0; i < n2; ++i)
 		{
 			std::cout << temp;
@@ -142,29 +135,7 @@ int main()
 		
 	}
 
-	std::ifstream hero2("./heroes/dog.txt");
-	std::ifstream at1("./attacks/spoon.txt");
-	std::ifstream at2("./attacks/triangle.txt");
-
-	/*printFile(hero2);
-	printFile(at1);
-	printFile(at2);*/
-
-	std::string temp1;
-	std::string temp2;
-	std::string temp3;
-	std::string temp4;
-
-	while (std::getline(hero, temp1))
-	{
-		std::getline(hero2, temp2);
-		std::getline(at1, temp3);
-		std::getline(at2, temp4);
-
-		std::cout << temp1 << temp1 << temp3 << temp4 << std::endl;
-
-	}
-	//printFile(scene);
+	printFile(scene);
 	
 	
 }
