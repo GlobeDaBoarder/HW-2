@@ -28,8 +28,11 @@ void printFile(std::ifstream& in)
 {
 	in.clear();
 	in.seekg(0);
-	std::cout << in.rdbuf();
-	std::cout << std::endl;
+	std::string temp;
+	while (std::getline(in, temp))
+	{
+		std::cout << temp << std::endl;
+	}
 	in.clear();
 	in.seekg(0);
 }
