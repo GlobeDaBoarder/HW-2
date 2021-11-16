@@ -6,6 +6,7 @@
 #pragma warning(disable : 4996)
 #include <string>
 #include <queue>
+#include <random>
 
 void setFontS(int s)
 {
@@ -124,9 +125,30 @@ std::ifstream selectAttack(std::queue<char>& moves)
 
 std::ifstream Randomize(std::queue<char>& sh_moves)
 {
-	std::ifstream temp("./attacks/triangle.txt");
-	sh_moves.push('i');
-	return temp;
+	std::random_device dev;
+	std::mt19937 rng(dev());
+	std::uniform_int_distribution<std::mt19937::result_type> dist3(1, 3); // distribution in range [1, 3]
+
+	std::ifstream temp;
+	int val = dist3(rng);
+	if (val == 1)
+	{
+		sh_moves.push('b');
+		temp.open("./attacks/mlg.txt");
+		return temp;
+	}
+	if (val == 2)
+	{
+		sh_moves.push('i');
+		temp.open("./attacks/triangle.txt");
+		return temp;
+	}
+	if (val == 3)
+	{
+		sh_moves.push('s');
+		temp.open("./attacks/spoon.txt");
+		return temp;
+	}
 }
 
 void checkCombos(std::queue<char>& moves, int& n, int& n_en, bool isShreck = 0)
