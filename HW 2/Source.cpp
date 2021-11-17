@@ -7,6 +7,8 @@
 #include <string>
 #include <queue>
 #include <random>
+#include <chrono>
+#include <thread>
 
 void setFontS(int s)
 {
@@ -193,26 +195,37 @@ void checkCombos(std::queue<char>& moves, int& n, int& n_en, bool isShreck = 0)
 	}
 
 	std::ifstream temp;
-	if (combo3 == "sss" )
+	if (combo3 == "bss" )
 	{
 		n_en--;
 		temp.open("./combos/spoon.txt");
 		printFile(who);
 		printFile(temp);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
-	else if (combo3 == "bbb")
+	else if (combo3 == "bbi")
 	{
 		n_en--;
 		temp.open("./combos/coma.txt");
 		printFile(who);
 		printFile(temp);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
-	else if (combo3 == "iii")
+	else if (combo3 == "isi")
 	{
 		n++;
 		temp.open("./combos/potion.txt");
 		printFile(who);
 		printFile(temp);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+	else if (combo4 == "ibsb")
+	{
+		n_en -= 2;
+		temp.open("./combos/pistol.txt");
+		printFile(who);
+		printFile(temp);
+		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 }
 
@@ -335,14 +348,17 @@ int main()
 	//hero select 
 
 	std::ifstream hero =  HeroSelect();
+	std::ifstream is("./heroes/hero_line.txt");
 	
 	system("cls");
+	printFile(is);
+	std::this_thread::sleep_for(std::chrono::seconds(1));
 	printFile(hero);
 
 	system("pause");
 	system("cls");
-	
 
+	is.close();
 	
 	// game start 
 
@@ -357,8 +373,4 @@ int main()
 		final_res.open("./ui/final_loose.txt");
 		printFile(final_res);
 	}
-
-	
-	
-	
 }
