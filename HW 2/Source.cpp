@@ -1,16 +1,16 @@
 #include <iostream>
-#include <Windows.h>
+#include <Windows.h> // library to change font size and enter full screen
 #include <fstream>
 #include <iomanip>
-#include <cwchar>
-#pragma warning(disable : 4996)
+#include <cwchar> // used to coppy current console font settings 
+#pragma warning(disable : 4996) // allows to copy console information from windows
 #include <string>
 #include <queue>
-#include <random>
-#include <chrono>
-#include <thread>
+#include <random> 
+#include <chrono> // library for time
+#include <thread> // library for time
 
-void setFontS(int s)
+void setFontS(int s) // changes console size to value s
 {
 	CONSOLE_FONT_INFOEX cfi;
 	cfi.cbSize = sizeof(cfi);
@@ -28,10 +28,10 @@ void ERR_LOG()
 	std::cout << "WRONG INPUT" << std::endl;
 }
 
-void printFile(std::ifstream& in)
+void printFile(std::ifstream& in) // prints out a txt file to the console
 {
-	in.clear();
-	in.seekg(0);
+	in.clear();  // resets stream, so we could print from begining of the file
+	in.seekg(0); //
 	std::string temp;
 	while (std::getline(in, temp))
 	{
@@ -41,9 +41,9 @@ void printFile(std::ifstream& in)
 	in.seekg(0);
 }
 
-void intro()
+void intro() // output title + start or quit 
 {
-	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
+	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0); // enter fullscreen 
 	setFontS(16);
 
 	std::ifstream title("./ui/title.txt");
@@ -65,11 +65,12 @@ void intro()
 
 std::ifstream HeroSelect()
 {
-	system("cls");
+	system("cls"); // clears the console
 	std::ifstream select("./ui/select.txt");
 	printFile(select);
 	select.close();
 
+	//switch in a loop to choose a hero we will fight with
 	char in;
 	std::ifstream hero;
 	while (true)
@@ -106,9 +107,9 @@ std::ifstream selectAttack(std::queue<char>& moves)
 		switch (in)
 		{
 		case 'b':
-			moves.push('b');
-			attack = std::ifstream("./attacks/mlg.txt");
-			return attack;
+			moves.push('b'); // adding attack letter to the queue of attacks
+			attack = std::ifstream("./attacks/mlg.txt"); // set attack to be equal to specific file
+			return attack; // return that stream with file
 		case 'i':
 			moves.push('i');
 			attack = std::ifstream("./attacks/triangle.txt");
@@ -118,21 +119,23 @@ std::ifstream selectAttack(std::queue<char>& moves)
 			attack = std::ifstream("./attacks/spoon.txt");
 			return attack;
 		case 'q':
-			exit(0);
+			exit(0); // end program 
 		default:
 			ERR_LOG();
 		}
 	}
 }
 
-std::ifstream Randomize(std::queue<char>& sh_moves)
+std::ifstream Randomize(std::queue<char>& sh_moves) // bot pick randomization 
 {
-	std::random_device dev;
-	std::mt19937 rng(dev());
+	// the non-bias and apparently the best "modern c++ way" to random a value that i found here
+	// https://stackoverflow.com/questions/7560114/random-number-c-in-some-range/7560151
+	std::random_device dev; // obtain a random number from hardware
+	std::mt19937 rng(dev()); // seed the generator
 	std::uniform_int_distribution<std::mt19937::result_type> dist3(1, 3); // distribution in range [1, 3]
 
 	std::ifstream temp;
-	int val = dist3(rng);
+	int val = dist3(rng); // generate a random value from 1 to 3
 	if (val == 1)
 	{
 		sh_moves.push('b');
@@ -155,35 +158,40 @@ std::ifstream Randomize(std::queue<char>& sh_moves)
 
 void checkCombos(std::queue<char>& moves, int& n, int& n_en, bool isShreck = 0)
 {
-	if (moves.size() > 4)
+	// if queue size is bigger than 4 we pop the firt element of the queue. \
+	We do that because there's no sense in keeping a queue of size more than 4, where biggest combo size is 4
+	if (moves.size() > 4) 
 	{
 		moves.pop();
 	}
+	//there's no need to check for combos if the queue is less then 3 aka we only made our first or second move
 	if (moves.size() < 3)
 	{
 		return;
 	}
 
 	
-	std::queue<char> copy = moves;
-	std::string combo4 = "";
+	std::queue<char> copy = moves; //  copy of the queue that we will pop and get element from 
+	std::string combo4 = ""; // string for storing and recognizing combos of size 4
 	for (int i = 0; i < moves.size(); ++i)
 	{
-		combo4 += copy.front();
-		copy.pop();
+		combo4 += copy.front();// adding first element of the queue
+		copy.pop(); // deleting first element
 	}
 
 	copy = moves;
 	if (copy.size() == 4)
 		copy.pop();
 	
-	std::string combo3 = "";
+	std::string combo3 = ""; // string for combos with size 3
 	for (int i = 0; i < 3; ++i)
 	{
 		combo3 += copy.front();
 		copy.pop();
 	}
 
+
+	//determening for which character to check combos
 	std::ifstream who;
 	if (isShreck)
 	{
@@ -194,6 +202,7 @@ void checkCombos(std::queue<char>& moves, int& n, int& n_en, bool isShreck = 0)
 		who.open("./combos/you.txt");
 	}
 
+	//checking combos 
 	std::ifstream temp;
 	if (combo3 == "bss" )
 	{
@@ -229,34 +238,34 @@ void checkCombos(std::queue<char>& moves, int& n, int& n_en, bool isShreck = 0)
 	}
 }
 
-bool Start(std::ifstream& hero)
+bool Start(std::ifstream& hero) // basicaly the main  game mechanics aka battle
 {
 	setFontS(5);
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_WINDOWED_MODE, 0);
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
 
-	std::queue<char> moves;
-	std::queue<char> sh_moves;
-	int n1 = 6;
+	std::queue<char> moves; // queue of moves for player
+	std::queue<char> sh_moves; // queue of moves for pc
+	int n1 = 6; // health variables
 	int n2 = 6;
-	std::ifstream heart("./ui/heart.txt");
+	std::ifstream heart("./ui/heart.txt"); 
 	std::ifstream shrek("./heroes/shrek.txt");
 
-	while (n1 > 0 && n2 > 0)
+	while (n1 > 0 && n2 > 0) // if hp is <= than 0 loop breaks 
 	{
 		system("cls");
-		std::ifstream attack(selectAttack(moves));
-		std::ifstream sh_attack(Randomize(sh_moves));
+		std::ifstream attack(selectAttack(moves)); // choose attack
+		std::ifstream sh_attack(Randomize(sh_moves)); // pc random attack
 		system("cls");
 
-		checkCombos(sh_moves, n2, n1, true);
-		checkCombos(moves,n1,  n2);
+		checkCombos(sh_moves, n2, n1, true); // check combos for pc
+		checkCombos(moves,n1,  n2);// check combos for player
 
 		
 		std::string temp;
 
 
-		//calculating hp
+		//calculating hp and performing the comparisons of chosen attacks
 		std::ifstream result;
 
 		if (moves.back() == sh_moves.back())
@@ -331,9 +340,13 @@ bool Start(std::ifstream& hero)
 	system("cls");
 
 	setFontS(16);
+
+	//here i reenter full screen because it won't properly change the font size otherwise
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_WINDOWED_MODE, 0);
 	SetConsoleDisplayMode(GetStdHandle(STD_OUTPUT_HANDLE), CONSOLE_FULLSCREEN_MODE, 0);
 
+
+	//returning who own
 	if (n2 <= 0)
 		return true;
 	return false;
@@ -352,7 +365,7 @@ int main()
 	
 	system("cls");
 	printFile(is);
-	std::this_thread::sleep_for(std::chrono::seconds(1));
+	std::this_thread::sleep_for(std::chrono::seconds(1)); // dellay of 1 second
 	printFile(hero);
 
 	system("pause");
@@ -362,7 +375,7 @@ int main()
 	
 	// game start 
 
-	std::ifstream final_res;
+	std::ifstream final_res; // lose or win screen
 	if (Start(hero))
 	{
 		final_res.open("./ui/final_win.txt");
@@ -373,4 +386,7 @@ int main()
 		final_res.open("./ui/final_loose.txt");
 		printFile(final_res);
 	}
+
+	system("pause"); // waiting for player to press enter, so that program wont close imideatly \
+	in the executable file
 }
